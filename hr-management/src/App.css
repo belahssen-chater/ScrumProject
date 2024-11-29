@@ -1,0 +1,181 @@
+/* Style général pour l'application */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #1b1b2f;
+  color: #e3e3e3;
+}
+
+.app-container {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Style de l'en-tête */
+h1 {
+  font-size: 2.8rem;
+  color: #ffd369;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+}
+
+/* Bouton - Ajouter un Employé */
+.add-button {
+  background-color: #ffd369;
+  color: #1b1b2f;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #e8c85a;
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(255, 211, 105, 0.3);
+}
+
+.add-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Bouton - Afficher/Cacher la Liste des Employés */
+.toggle-list-button {
+  background-color: #ffd369;
+  border: none;
+  color: #1b1b2f;
+  padding: 15px 30px;
+  font-size: 1.1rem;
+  margin: 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.toggle-list-button:hover {
+  background-color: #e8c85a;
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(255, 211, 105, 0.3);
+}
+
+.toggle-list-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Tableau des employés */
+.employees-table {
+  width: 90%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.employees-table th, .employees-table td {
+  border: 1px solid #393e46;
+  padding: 15px;
+  text-align: center;
+}
+
+.employees-table th {
+  background-color: #393e46;
+  color: #ffd369;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.employees-table tr:nth-child(even) {
+  background-color: #4e4e50;
+}
+
+.employees-table tr:nth-child(odd) {
+  background-color: #2e2e40;
+}
+
+/* Animation de survol des lignes du tableau */
+.employees-table tr:hover {
+  background-color: #ffd369;
+  color: #1b1b2f;
+  font-weight: bold;
+}
+
+/* Boîte de dialogue pour ajouter un employé */
+.add-employee-form {
+  background-color: #393e46;
+  padding: 25px;
+  margin: 25px auto;
+  width: 60%;
+  max-width: 500px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.add-employee-form label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: left;
+  font-weight: bold;
+  color: #ffd369;
+}
+
+.add-employee-form input,
+.add-employee-form select {
+  width: calc(100% - 20px);
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 2px solid #ffd369;
+  background-color: #2e2e40;
+  color: #ffffff;
+}
+
+.add-employee-form input::placeholder {
+  color: #bbbbbb;
+}
+
+/* Bouton de soumission pour le formulaire d'ajout */
+.add-employee-submit {
+  background-color: #ffd369;
+  color: #1b1b2f;
+  padding: 12px 20px;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.add-employee-submit:hover {
+  background-color: #e8c85a;
+  transform: scale(1.05);
+  box-shadow: 0 8px 15px rgba(255, 211, 105, 0.3);
+}
+
+.add-employee-submit:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* Pour rendre le tableau responsive */
+@media screen and (max-width: 768px) {
+  .employees-table, .employees-table th, .employees-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .employees-table th {
+    text-align: center;
+  }
+
+  .employees-table td {
+    text-align: center;
+    padding: 10px;
+  }
+
+  .add-employee-form {
+    width: 90%;
+  }
+}
