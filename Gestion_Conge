@@ -1,0 +1,187 @@
+Gestion Congé
+
+app.py
+from flask import Flask, render_template, request, redirect, url_for
+
+app = Flask(__name__)
+
+# Base de données simulée des employés
+employees = [
+   
+    {'EmployeeID': 1, 'EmployeeName': 'John Smith', 'LeaveBalance': 10, 'Position': 'Production Technician I', 'EmploymentStatus': 'Active'},
+    {'EmployeeID': 2, 'EmployeeName': 'Sarah Johnson', 'LeaveBalance': 5, 'Position': 'Sr. DBA', 'EmploymentStatus': 'Voluntarily Terminated'},
+    {'EmployeeID': 3, 'EmployeeName': 'Michael Williams', 'LeaveBalance': 8, 'Position': 'Production Technician II', 'EmploymentStatus': 'Active'},
+    {'EmployeeID': 4, 'EmployeeName': 'Emily Brown', 'LeaveBalance': 12, 'Position': 'HR Manager', 'EmploymentStatus': 'Active'},
+    {'EmployeeID': 5, 'EmployeeName': 'David Jones', 'LeaveBalance': 6, 'Position': 'Software Engineer', 'EmploymentStatus': 'Voluntarily Terminated'},
+    {'EmployeeID': 6, 'EmployeeName': 'Jessica Davis', 'LeaveBalance': 10, 'Position': 'Marketing Specialist', 'EmploymentStatus': 'Active'},
+    {'EmployeeID': 7, 'EmployeeName': 'James Wilson', 'LeaveBalance': 15, 'Position': 'Finance Analyst', 'EmploymentStatus': 'Active'},
+    {'EmployeeID': 8, 'EmployeeName': 'Maria Garcia', 'LeaveBalance': 5, 'Position': 'Project Manager', 'EmploymentStatus': 'Active'}
+
+    # Ajoutez d'autres employés ici
+]
+
+# Liste des demandes de congés
+leave_requests = []
+
+@app.route('/')
+def index():
+    return render_template('index.html', employees=employees, leave_requests=leave_requests)
+
+@app.route('/apply-leave', methods=['POST'])
+def apply_leave():
+    emp_id = int(request.form['employee_id'])
+    leave_days = int(request.form['leave_days'])
+    employee = next((emp for emp in employees if emp['EmployeeID'] == emp_id), None)
+
+    if employee and employee['LeaveBalance'] >= leave_days:
+        leave_requests.append({
+            "employee_name": employee['EmployeeName'],
+            "leave_days": leave_days,
+            "status": "Pending",
+            "employee_id": emp_id
+        })
+        employee['LeaveBalance'] -= leave_days
+        return redirect(url_for('index'))
+    else:
+        return "Erreur : Solde de congés insuffisant ou employé invalide.", 400
+
+@app.route('/approve-leave/<int:index>', methods=['POST'])
+def approve_leave(index):
+    leave_requests[index]["status"] = "Approved"
+    return redirect(url_for('index'))
+
+@app.route('/reject-leave/<int:index>', methods=['POST'])
+def reject_leave(index):
+    leave_requests[index]["status"] = "Rejected"
+    return redirect(url_for('index'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+--------------------------------------------
+
+index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestion des Congés</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f9;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+      th {
+        background-color: #007bff;
+        color: white;
+      }
+      form {
+        margin-bottom: 20px;
+      }
+      button {
+        padding: 8px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button.reject {
+        background-color: #dc3545;
+      }
+      button:hover {
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Gestion des Congés</h1>
+
+    <h2>Employés</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID Employé</th>
+          <th>Nom</th>
+          <th>Solde de Congés</th>
+          <th>Poste</th>
+          <th>Status d'Emploi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for emp in employees %}
+        <tr>
+          <td>{{ emp.EmployeeID }}</td>
+          <td>{{ emp.EmployeeName }}</td>
+          <td>{{ emp.LeaveBalance }}</td>
+          <td>{{ emp.Position }}</td>
+          <td>{{ emp.EmploymentStatus }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h2>Demander un Congé</h2>
+    <form action="/apply-leave" method="POST">
+      <label for="employee_id">ID Employé :</label>
+      <select name="employee_id" required>
+        {% for emp in employees %}
+        <option value="{{ emp.EmployeeID }}">{{ emp.EmployeeName }}</option>
+        {% endfor %}
+      </select>
+      <label for="leave_days">Nombre de Jours :</label>
+      <input type="number" name="leave_days" min="1" required />
+      <button type="submit">Demander</button>
+    </form>
+
+    <h2>Demandes de Congés</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Jours Demandés</th>
+          <th>Statut</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for req in leave_requests %}
+        <tr>
+          <td>{{ req.employee_name }}</td>
+          <td>{{ req.leave_days }}</td>
+          <td>{{ req.status }}</td>
+          <td>
+            {% if req.status == "Pending" %}
+            <form
+              action="/approve-leave/{{ loop.index0 }}"
+              method="POST"
+              style="display: inline"
+            >
+              <button type="submit">Approuver</button>
+            </form>
+            <form
+              action="/reject-leave/{{ loop.index0 }}"
+              method="POST"
+              style="display: inline"
+            >
+              <button type="submit" class="reject">Rejeter</button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>
